@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Will you be my Valentine?</title>
+  <title>Will you be my Valentine? 💖</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg1: #ffafbd;
-      --bg2: #ffc3a0;
-      --card: rgba(255, 255, 255, 0.85);
+      --bg1: #ffd6e7;
+      --bg2: #fff0f7;
+      --card: #ffffffdd;
       --yes: #ff3b7a;
       --yesHover: #ff1f68;
-      --text: #4a4a4a;
     }
 
     * { box-sizing: border-box; }
@@ -25,218 +27,258 @@
       min-height: 100svh;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      font-family: 'Quicksand', sans-serif;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+      font-family: "Nunito", system-ui, sans-serif;
       overflow: hidden;
       padding: 16px;
     }
 
-    /* Floating background hearts */
-    .bg-heart {
-      position: fixed;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 20px;
-      user-select: none;
-      pointer-events: none;
-      z-index: 0;
-      animation: float Up 6s linear infinite;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
-
+    /* CONFETTI CANVAS */
     #confettiCanvas {
       position: fixed;
       inset: 0;
-      width: 100vw;
-      height: 100vh;
       pointer-events: none;
       z-index: 9999;
     }
 
     .card {
-      position: relative;
-      z-index: 10;
-      width: min(500px, 92vw);
-      padding: 40px 20px;
+      width: min(720px, 92vw);
+      padding: 28px 22px 32px;
       background: var(--card);
-      border-radius: 30px;
+      backdrop-filter: blur(14px);
+      border-radius: 26px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-      border: 4px solid white;
+      box-shadow: 0 25px 80px rgba(0,0,0,.18);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .art {
-      width: 180px;
-      margin: 0 auto 20px;
-      display: block;
-      transition: transform 0.3s ease;
+      width: min(260px, 80vw);
+      margin: 0 auto 12px;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.15));
     }
 
-    /* Blushing effect controlled by JS */
-    #blush { opacity: 0; transition: opacity 0.5s ease; }
-
     h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: clamp(32px, 8vw, 48px);
-      color: #d63384;
-      margin: 0 0 20px;
+      font-size: clamp(28px, 4vw, 46px);
+      margin: 14px 0 20px;
+      font-weight: 900;
     }
 
     .button-zone {
       position: relative;
-      height: 180px;
-      margin-top: 20px;
+      width: min(520px, 92%);
+      height: 160px;
+      margin: 0 auto;
+      touch-action: none;
     }
 
     button {
       position: absolute;
-      padding: 16px 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 16px 26px;
       font-size: 18px;
-      font-weight: 700;
-      border-radius: 50px;
+      font-weight: 900;
+      border-radius: 999px;
       border: none;
       cursor: pointer;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 12px 26px rgba(0,0,0,.16);
+      user-select: none;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+
+    button:active {
+      transform: translateY(-50%) scale(0.96);
+      box-shadow: 0 8px 18px rgba(0,0,0,.18);
     }
 
     #yesBtn {
-      left: 20%;
-      top: 50%;
-      transform: translateY(-50%);
+      left: 18%;
       background: var(--yes);
       color: #fff;
-      z-index: 100;
+      animation: heartbeat 1.6s infinite;
+    }
+
+    #yesBtn:hover {
+      background: var(--yesHover);
+    }
+
+    @keyframes heartbeat {
+      0%,100% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-50%) scale(1.08); }
     }
 
     #noBtn {
-      right: 20%;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #f3f4f6;
-      color: #6b7280;
+      left: 62%;
+      background: #e5e7eb;
+      color: #111827;
+      transition: left .15s ease, top .15s ease;
     }
 
     .hint {
+      margin-top: 12px;
       font-size: 14px;
-      color: #888;
-      margin-top: 15px;
-      font-style: italic;
+      opacity: .75;
     }
 
     .result {
       display: none;
-      animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      margin-top: 20px;
+      animation: pop .4s ease;
     }
 
     .result h2 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 50px;
-      color: #ff3b7a;
+      font-size: clamp(32px, 4.5vw, 48px);
+      margin: 12px 0;
+    }
+
+    .fireworks {
+      width: min(380px, 90vw);
     }
 
     @keyframes pop {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      from { transform: scale(.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <canvas id="confettiCanvas"></canvas>
+<canvas id="confettiCanvas"></canvas>
 
-  <main class="card">
-    <svg class="art" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="100" cy="100" r="80" fill="#FFE4E1" />
-      <circle cx="70" cy="90" r="10" fill="#333" />
-      <circle cx="130" cy="90" r="10" fill="#333" />
-      <g id="blush">
-        <circle cx="55" cy="115" r="12" fill="#FFB6C1" />
-        <circle cx="145" cy="115" r="12" fill="#FFB6C1" />
-      </g>
-      <path d="M85 130 Q100 150 115 130" stroke="#333" stroke-width="5" fill="none" stroke-linecap="round" />
-      <path d="M100 20 Q110 5 125 15 Q135 25 120 40 L100 60 L80 40 Q65 25 75 15 Q90 5 100 20" fill="#ff3b7a" />
-    </svg>
+<main class="card">
+  <svg class="art" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fur" x1="0" x2="1">
+        <stop offset="0" stop-color="#f7c7a1"/>
+        <stop offset="1" stop-color="#f2a97b"/>
+      </linearGradient>
+      <linearGradient id="heart" x1="0" x2="1">
+        <stop offset="0" stop-color="#ff4d7d"/>
+        <stop offset="1" stop-color="#ff1f68"/>
+      </linearGradient>
+    </defs>
 
-    <div id="quiz-ui">
-      <h1>Anu, will you be my valentine?</h1>
-      <section class="button-zone" id="zone">
-        <button id="yesBtn">Yes!</button>
-        <button id="noBtn">No</button>
-      </section>
-      <div class="hint" id="hint">Think carefully... 😉</div>
-    </div>
+    <path d="M250 50 C250 33 270 25 282 38
+             C294 25 314 33 314 50
+             C314 78 282 92 282 106
+             C282 92 250 78 250 50Z"
+          fill="url(#heart)"/>
 
-    <section class="result" id="result">
-      <h2>I knew it! ❤️</h2>
-      <p style="font-size: 1.2rem;">You just made my day!</p>
-      <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXN2OXp5ZzR3eXN5eXN5eXN5eXN5eXN5eXN5eXN5eXN5JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/KztT2c4u8mYYUiMKdJ/giphy.gif" width="200" alt="Happy dance">
-    </section>
-  </main>
+    <path d="M90 120 C90 70 140 40 190 60
+             C240 40 290 70 290 120
+             C290 180 240 210 190 210
+             C140 210 90 180 90 120Z"
+          fill="url(#fur)"/>
 
-  <script>
-    const zone = document.getElementById("zone");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const result = document.getElementById("result");
-    const quizUi = document.getElementById("quiz-ui");
-    const blush = document.getElementById("blush");
+    <path d="M110 92 L95 55 L140 78 Z" fill="#f2a97b"/>
+    <path d="M270 92 L285 55 L240 78 Z" fill="#f2a97b"/>
 
-    // 1. Create floating background hearts
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.classList.add('bg-heart');
-      heart.innerHTML = '❤️';
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-      heart.style.opacity = Math.random();
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 6000);
+    <circle cx="160" cy="130" r="8"/>
+    <circle cx="220" cy="130" r="8"/>
+
+    <path d="M190 144 C186 144 182 148 182 152
+             C182 160 190 164 190 170
+             C190 164 198 160 198 152
+             C198 148 194 144 190 144Z"
+          fill="#ff7aa2"/>
+  </svg>
+
+  <h1>Anu, will you be my Valentine? 💕</h1>
+
+  <section class="button-zone" id="zone">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 🙈</button>
+  </section>
+
+  <div class="hint" id="hint">You can try saying “No”… if you can 😈</div>
+
+  <section class="result" id="result">
+    <h2>YAY!!! 🎉💘</h2>
+    <img class="fireworks"
+         src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif"
+         alt="Fireworks">
+  </section>
+</main>
+
+<script>
+  const zone = document.getElementById("zone");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const result = document.getElementById("result");
+  const hint = document.getElementById("hint");
+  const canvas = document.getElementById("confettiCanvas");
+
+  function resizeCanvas() {
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+  }
+
+  resizeCanvas();
+  addEventListener("resize", resizeCanvas);
+
+  const confettiInstance = confetti.create(canvas, { resize: false, useWorker: true });
+
+  function celebrate() {
+    const end = Date.now() + 1500;
+    (function frame() {
+      confettiInstance({
+        particleCount: 10,
+        spread: 90,
+        startVelocity: 45,
+        origin: { x: Math.random(), y: Math.random() * 0.3 }
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+
+  let yesScale = 1;
+  function growYes() {
+    yesScale = Math.min(2.2, yesScale + 0.08);
+    yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+  }
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  zone.addEventListener("pointermove", e => {
+    const zb = zone.getBoundingClientRect();
+    const nb = noBtn.getBoundingClientRect();
+    const dx = (nb.left + nb.width/2) - e.clientX;
+    const dy = (nb.top + nb.height/2) - e.clientY;
+    if (Math.hypot(dx, dy) < 140) {
+      const nl = clamp(Math.random() * (zb.width - nb.width), 0, zb.width - nb.width);
+      const nt = clamp(Math.random() * (zb.height - nb.height), 0, zb.height - nb.height);
+      noBtn.style.left = nl + "px";
+      noBtn.style.top = nt + "px";
+      growYes();
     }
-    setInterval(createHeart, 500);
+  });
 
-    // 2. Interaction Logic
-    let yesScale = 1;
-    let noClicks = 0;
-
-    function moveNo() {
-      const x = Math.random() * (zone.offsetWidth - noBtn.offsetWidth);
-      const y = Math.random() * (zone.offsetHeight - noBtn.offsetHeight);
-      
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
-      
-      // Grow Yes Button & Add Blush
-      yesScale += 0.2;
-      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
-      blush.style.opacity = Math.min(1, noClicks / 5);
-      noClicks++;
-    }
-
-    noBtn.addEventListener("mouseover", moveNo);
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      moveNo();
-    });
-
-    yesBtn.addEventListener("click", () => {
-      quizUi.style.display = "none";
-      result.style.display = "block";
-      
-      const duration = 5 * 1000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-      const interval = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
-        if (timeLeft <= 0) return clearInterval(interval);
-        const particleCount = 50 * (timeLeft / duration);
-        confetti({ ...defaults, particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } });
-      }, 250);
-    });
-  </script>
+  yesBtn.addEventListener("click", () => {
+    zone.style.display = "none";
+    hint.style.display = "none";
+    result.style.display = "block";
+    resizeCanvas();
+    celebrate();
+  });
+</script>
 </body>
 </html>
